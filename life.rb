@@ -1,14 +1,14 @@
 class World
   attr_accessor :size, :terrain
 
-  def initialize(x = 10,y = 10) 
-    @size = [x,y] 
+  def initialize(length = 10, height = 10) 
+    @size = [length, height] 
 
     @terrain = []
-    y.times {@terrain << []}
+      height.times {@terrain << []}
 
     @terrain.each do |derp|
-      x.times {derp << '* '}
+      length.times {derp << '* '}
     end
   end
 
@@ -18,85 +18,71 @@ class World
     end
   end
 
-  def test(x,y)
-
-
-    neigh = 0
-   
-
-    if y < @terrain.length && x < @terrain[0].length
-      neigh += 1 if @terrain[y+1][x+1] == "O "
-    end
-
-    unless y >= @terrain.length 
-      neigh += 1 if @terrain[y+1][x] == "O "
-      neigh += 1 if @terrain[y+1][x-1] == "O "
-    end
-
-    unless x >= @terrain[0].length 
-      neigh += 1 if @terrain[y][x+1] == "O "
-      neigh += 1 if @terrain[y-1][x+1] == "O "
-    end
-
-    neigh += 1 if @terrain[y-1][x] == "O "
-    neigh += 1 if @terrain[y][x-1] == "O "
-    neigh += 1 if @terrain[y-1][x-1] == "O "
-
-    if @terrain[y][x] == "O "
-      if neigh == 2 || neigh == 3
-        return true
-      else
-        return false
-      end
-    elsif @terrain[y][x] != "O "
-      if neigh == 3
-        return true
-      else
-        return false
-      end
-    end
-  end 
-
   def tick
-    y = 0
-    x = 0
-    terraintemp = @terrain.clone
+    temparray = Marshal.load(Marshal.dump(@terrain)) 
 
-    until y == @terrain.length - 1
-      until x == @terrain[0].length - 1
-        if test(x,y)
-          terraintemp[x][y] = "O "
-        end
-        x+=1
-      end
-      x=0
-      y+=1
+    x = 0
+    until x == @terrain.length
+      y = 0 
+
+      until y == @terrain[0].length
+        neigh  = 0
+
+        neigh += 1 if @terrain[(x+1)%10][(y+1)%10] == "# "
+        neigh += 1 if @terrain[(x+1)%10][y-1] == "# "
+        neigh += 1 if @terrain[(x+1)%10][y] == "# "
+
+        neigh += 1 if @terrain[x-1][(y+1)%10] == "# "
+        neigh += 1 if @terrain[x][(y+1)%10] == "# "
+        neigh += 1 if @terrain[x-1][y] == "# "
+        neigh += 1 if @terrain[x][y-1] == "# "
+        neigh += 1 if @terrain[x-1][y-1] == "# "
+
+        if @terrain[x][y] == "* "    
+           if neigh == 3 
+             temparray[x][y] = "# "
+
+           end
+         end
+
+         if @terrain[x][y] == "# "
+           if neigh == 2 || neigh == 3
+             temparray[x][y] = "# "            
+           else
+             temparray[x][y] = "* "
+           end
+         end
+         y += 1
+       end
+       x += 1
     end
-    @terrain = terraintemp
+
+    @terrain = temparray
+    end
+     
 
   end
 
-end
 
-x = World.new
+
+
+
+x = World.new(20,20)
+
 system("clear")
 x.print
 gets
 
-x.terrain[4][5] = "O "
-x.terrain[4][4] = "O "
-x.terrain[4][6] = "O "
+x.terrain[4][5] = "# "
+x.terrain[4][4] = "# "
+x.terrain[4][6] = "# "
+
+x.print
 
 loop do
-x.tick
-x.print
-sleep 0.5
+system("clear")
+  x.tick
+  x.print
+sleep 1
 end
-
-
-p x.test(5,4)
-
-
-x.print
-gets
 
