@@ -1,11 +1,13 @@
+#!/usr/bin/env ruby
+
 class World
   attr_accessor :size, :terrain
 
-  def initialize(length = 10, height = 10) 
+  def initialize(length = 10, height = 10)
     @length = length
     @height = height
 
-    @size = [length, height] 
+    @size = [length, height]
     @terrain = []
       height.times {@terrain << []}
     @terrain.each do |derp|
@@ -14,24 +16,24 @@ class World
   end
 
   def print
-    @terrain.each do |derp| 
+    @terrain.each do |derp|
       puts derp.join
     end
   end
 
   def pop(x = 20)
-    x.times do 
+    x.times do
       @terrain[rand(@height)][rand(@length)] = "# "
     end
   end
 
 
   def tick
-    temparray = Marshal.load(Marshal.dump(@terrain)) 
+    temparray = Marshal.load(Marshal.dump(@terrain))
 
     x = 0
     until x == @terrain.length
-      y = 0 
+      y = 0
 
       until y == @terrain[0].length
         neigh  = 0
@@ -46,8 +48,8 @@ class World
         neigh += 1 if @terrain[x][y-1] == "# "
         neigh += 1 if @terrain[x-1][y-1] == "# "
 
-        if @terrain[x][y] == "  "    
-           if neigh == 3 
+        if @terrain[x][y] == "  "
+           if neigh == 3
              temparray[x][y] = "# "
 
            end
@@ -55,7 +57,7 @@ class World
 
          if @terrain[x][y] == "# "
            if neigh == 2 || neigh == 3
-             temparray[x][y] = "# "            
+             temparray[x][y] = "# "
            else
              temparray[x][y] = "  "
            end
@@ -71,18 +73,13 @@ end
 
 x = World.new(90,40)
 
-system("clear")
-x.print
-gets
 x.pop(1020)
-x.print
-gets
 
 loop do
 system("clear")
   x.tick
   x.print
 
-sleep 0.15
+sleep 0.05
 end
 
