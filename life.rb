@@ -71,15 +71,20 @@ class World
   end
 end
 
-x = World.new(90,40)
 
-x.pop(1020)
+x = `tput cols`.to_i
+y = `tput lines`.to_i
+pop = ((x*y) * 0.8).to_i
+pop = (x*y)/2
+puts pop
+
+x = World.new(x/2, y)
+
+x.pop(pop)
 
 loop do
-system("clear")
+  system("clear")
   x.tick
   x.print
-
-sleep 0.05
+  sleep 0.05
 end
-
