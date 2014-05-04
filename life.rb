@@ -75,16 +75,22 @@ end
 x = `tput cols`.to_i
 y = `tput lines`.to_i
 pop = ((x*y) * 0.8).to_i
-pop = (x*y)/2
-puts pop
+pop = ((x*y) *  0.2).to_i
 
 x = World.new(x/2, y)
 
 x.pop(pop)
+x.print
+
+if ARGV[0]
+  sleeptime = ARGV[0].to_f
+else
+  sleeptime = 0.1
+end
 
 loop do
   system("clear")
   x.tick
   x.print
-  sleep 0.05
+  sleep sleeptime
 end
