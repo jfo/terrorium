@@ -1,16 +1,27 @@
 def populate
     cells = []
-    10.times do
-        cells << [rand(9),rand(9)]
+    100.times do
+        cells << [rand(10..30),rand(10..30)]
     end
     return cells
 end
 
 def find_neighbors(coord)
+    deltas = [[0, 1],
+              [0, -1],
+              [1, 0],
+              [-1, 0],
+              [1, 1],
+              [-1, -1],
+              [1, -1],
+              [-1, 1]]
+
     output = []
-    [0,0,1,1,-1,-1].permutation(2).each do |x, y|
+
+    deltas.each do |x, y|
         output << [coord[0] + x, coord[1] + y]
     end
+
     output.uniq
 end
 
@@ -35,13 +46,32 @@ def tick(world)
         tally = (neighbors & world).length
         new_world << living_cell if tally == 2 || tally == 3
     end
+
     new_world.uniq
 end
 
+def print_world(world)
+    out = []
+    (0..40).each do |y|
+        out[y] = []
+        (0..40).each do |x|
+            if world.include?([x,y])
+                out[y] << "▓ "
+            else
+                out[y] << "  "
+            end
+        end
+        out[y] << "\n"
+    end
+    print out.join
+end
+
+
+
 x = populate
-p x
 loop do 
-    p x = tick(x)
-    gets
+    print_world x
+    x = tick(x)
+    sleep 0.01
 end
 
